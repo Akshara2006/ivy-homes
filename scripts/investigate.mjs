@@ -17,6 +17,15 @@ if (!API_KEY || API_KEY === 'IVY26-XXXXXXXXXXXX') {
 const REFERENCE = new Date('2026-09-10T00:00:00+05:30')
 const SEVEN_DAYS_BEFORE = new Date(REFERENCE.getTime() - 7 * 24 * 60 * 60 * 1000)
 
+// Graceful process termination handlers
+process.on('SIGINT', () => {
+  console.log('\n✓ Gracefully stopped investigation.')
+  process.exit(0)
+})
+process.on('SIGTERM', () => {
+  process.exit(0)
+})
+
 let TOKEN = null
 
 async function api(endpointPath, opts = {}) {
@@ -64,27 +73,24 @@ async function login() {
   return res.data
 }
 
-async function fetchAll(endpoint, params = {}, limit = 200) {
+async function fetchAll(endpoint, params = {}, limit = 50) {
   const all = []
-  let page = 1
   let total = Infinity
 
   while (all.length < total) {
-    const res = await api(endpoint, { params: { ...params, page, limit } })
+    const res = await api(endpoint, { params: { ...params, offset: all.length, limit } })
     if (res.status !== 200) {
-      console.error(`  Error fetching ${endpoint} page ${page}:`, res.data)
+      console.error(`  Error fetching ${endpoint} offset ${all.length}:`, res.data)
       break
     }
 
     const d = res.data
     const results = d.results || d.data || []
     total = d.total ?? d.count ?? results.length
-    const pageSize = d.page_size ?? d.limit ?? limit
 
     all.push(...results)
 
-    if (results.length === 0 || results.length < pageSize || all.length >= total) break
-    page++
+    if (results.length === 0 || all.length >= total) break
   }
 
   return all
@@ -163,6 +169,24 @@ async function auditEndpoints() {
   // 4. Pagination tests
   const p0 = await api('/v1/listings', { params: { page: 0 } })
   console.log('  GET /v1/listings?page=0 status:', p0.status)
+
+  const page1 = await api('/v1/listings', { params: { page: 1, limit: 5 } })
+  const page2 = await api('/v1/listings', { params: { page: 2, limit: 5 } })
+  const offset5 = await api('/v1/listings', { params: { offset: 5, limit: 5 } })
+  const p1Id = page1.data?.results?.[0]?.listing_id
+  const p2Id = page2.data?.results?.[0]?.listing_id
+  const offId = offset5.data?.results?.[0]?.listing_id
+  if (p1Id && p2Id && offId && p1Id === p2Id && p1Id !== offId) {
+    findings.push({
+      endpoint: '/v1/listings',
+      category: 'pagination',
+      documented: 'query parameter page for pagination (e.g. GET /v1/listings?page=2)',
+      actual: 'query parameter page is completely ignored by upstream; pagination requires offset parameter (?offset=N)',
+      how_found: 'compared GET /v1/listings?page=1 vs ?page=2 (identical results returned) vs ?offset=5 (returns next records)',
+      impact: 'clients relying on documented page parameter are stuck on the first page',
+      evidence: [p1Id, offId],
+    })
+  }
 
   const bigLimit = await api('/v1/listings', { params: { limit: 300 } })
   const actualLimit = bigLimit.data.page_size || bigLimit.data.limit

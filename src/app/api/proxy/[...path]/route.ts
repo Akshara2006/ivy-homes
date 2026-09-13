@@ -215,6 +215,14 @@ async function proxyRequest(
     searchParams.delete('bhk')
   }
 
+  // Upstream rejects or ignores 'page' and requires 'offset'
+  if (searchParams.has('page') && !searchParams.has('offset')) {
+    const pageNum = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
+    const limitNum = parseInt(searchParams.get('limit') || '12', 10)
+    searchParams.set('offset', String((pageNum - 1) * limitNum))
+    searchParams.delete('page')
+  }
+
   const targetUrl = `${apiBase}${path}?${searchParams.toString()}`
 
   const fetchOptions: RequestInit = {

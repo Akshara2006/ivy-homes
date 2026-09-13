@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Ivy Atelier Design System: Deep Forest Ivy & Warm Travertine ─── */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* ─── Brand: Deep Royal Ivy Forest Green ─── */
+  --color-brand-50: #f0f7f3;
+  --color-brand-100: #dbeef3;
+  --color-brand-200: #b8dfcb;
+  --color-brand-300: #88c6a6;
+  --color-brand-400: #4da57b;
+  --color-brand-500: #165b3f;
+  --color-brand-600: #0e432e;
+  --color-brand-700: #0a3423;
+  --color-brand-800: #072619;
+  --color-brand-900: #051a11;
+  --color-brand-950: #020c08;
+
+  /* ─── Architectural Brass & Champagne Ochre ─── */
+  --color-brass-100: #fbf5e6;
+  --color-brass-300: #ebd39b;
+  --color-brass-400: #dfb253;
+  --color-brass-500: #c59a3f;
+  --color-brass-600: #a97e28;
+  --color-brass-700: #7d5a15;
+
+  /* ─── Surfaces: Warm Travertine & Alabaster Canvas ─── */
+  --color-canvas: #faf8f5;
+  --color-surface-card: #ffffff;
+  --color-surface-subtle: #f4efe6;
+  --color-surface-muted: #ebe5d8;
+  --color-border-subtle: #e8e2d5;
+  --color-border-medium: #d8d0be;
+  --color-border-strong: #b8ae98;
+
+  /* ─── Ink Typography: Deep Obsidian & Warm Charcoal ─── */
+  --color-ink-950: #0e1411;
+  --color-ink-900: #141c17;
+  --color-ink-800: #222d26;
+  --color-ink-700: #3b473f;
+  --color-ink-600: #57645b;
+  --color-ink-500: #7a877e;
+  --color-ink-400: #a0aca4;
+  --color-ink-300: #cbd3cc;
+  --color-ink-200: #e5eae6;
+}
+
+/* ─── Bespoke Architectural Shadows (Tactile & Layered) ─── */
+.shadow-atelier {
+  box-shadow: 0 1px 2px 0 rgba(10, 52, 35, 0.04), 0 4px 14px -2px rgba(10, 52, 35, 0.06);
+}
+
+.shadow-atelier-hover {
+  box-shadow: 0 3px 6px 0 rgba(10, 52, 35, 0.04), 0 16px 32px -6px rgba(10, 52, 35, 0.1);
+}
+
+.shadow-atelier-modal {
+  box-shadow: 0 25px 60px -12px rgba(10, 52, 35, 0.25), 0 0 0 1px rgba(10, 52, 35, 0.06);
+}
+
+/* ─── Fine Architectural Grid Lines ─── */
+.architectural-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(232, 226, 213, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(232, 226, 213, 0.5) 1px, transparent 1px);
+}
+
+/* ─── Ticker Animations ─── */
+@keyframes ticker {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker 35s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Micro-Transitions ─── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Custom Scrollbar for Bespoke Proptech Feel ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f4efe6;
+}
+::-webkit-scrollbar-thumb {
+  background: #d8d0be;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0a3423;
+}

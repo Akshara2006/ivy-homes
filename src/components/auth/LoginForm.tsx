@@ -16,7 +16,7 @@ const DEMO_PERSONAS = [
 
 export function LoginForm() {
   const { login } = useAuth()
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('demo1@ivy.homes')
   const [password, setPassword] = useState(() => {
     return (
       process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
@@ -43,14 +43,22 @@ export function LoginForm() {
     }
   }
 
-  const quickLogin = (userEmail: string) => {
+  const quickLogin = async (userEmail: string) => {
     setEmail(userEmail)
-    const saved =
-      process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
-      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '') ||
-      'a611f561de'
-    if (saved) {
-      setPassword(saved)
+    const pass = 'a611f561de'
+    setPassword(pass)
+    setLoading(true)
+    try {
+      await login(userEmail, pass)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('ivy_demo_password', pass)
+      }
+      toast.success('Welcome back to Ivy Homes!')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Login failed'
+      toast.error(message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -182,6 +190,10 @@ export function LoginForm() {
               >
                 {loading ? 'Authenticating...' : 'Sign In to Explorer'}
               </Button>
+
+              <div className="text-center text-[11px] text-ink-500 mt-2">
+                <span>Demo credentials are pre-configured. Click any persona above for 1-click instant login.</span>
+              </div>
             </form>
 
             <div className="mt-6 text-center text-xs text-ink-400">

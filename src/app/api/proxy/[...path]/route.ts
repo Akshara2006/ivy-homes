@@ -240,14 +240,23 @@ const DEMO_PASSWORD = (
   'a611f561de'
 ).trim()
 
+  let requestedCustomEmail = ''
+
   // Forward body for POST/PUT
   if (method === 'POST' || method === 'PUT') {
     try {
       const bodyText = await request.text()
       if (bodyText) {
-        if (path === '/auth/login' && DEMO_PASSWORD) {
+        if (path === '/auth/login') {
           try {
             const parsed = JSON.parse(bodyText)
+            const inputEmail = String(parsed.email || '').trim().toLowerCase()
+            // If user enters an email that is not one of the 3 backend demo accounts,
+            // authenticate against demo1 upstream but preserve their user display identity
+            if (inputEmail && !['demo1@ivy.homes', 'demo2@ivy.homes', 'demo3@ivy.homes'].includes(inputEmail)) {
+              requestedCustomEmail = parsed.email
+              parsed.email = 'demo1@ivy.homes'
+            }
             if (!parsed.password || parsed.password.trim() === '') {
               parsed.password = DEMO_PASSWORD
             }
@@ -266,10 +275,49 @@ const DEMO_PASSWORD = (
 
   try {
     const res = await fetch(targetUrl, fetchOptions)
-    const data = await res.text()
+    let data = await res.text()
 
     if (!res.ok) {
       console.warn(`[Proxy Upstream Error] ${fetchOptions.method || 'GET'} ${path} -> HTTP ${res.status}: ${data}`)
+      // If login returned 401 because user typed a custom password, retry with DEMO_PASSWORD
+      if (path === '/auth/login' && res.status === 401 && DEMO_PASSWORD) {
+        try {
+          const retryOptions = { ...fetchOptions }
+          const parsed = JSON.parse(fetchOptions.body as string || '{}')
+          parsed.password = DEMO_PASSWORD
+          parsed.email = parsed.email && ['demo1@ivy.homes', 'demo2@ivy.homes', 'demo3@ivy.homes'].includes(parsed.email)
+            ? parsed.email
+            : 'demo1@ivy.homes'
+          retryOptions.body = JSON.stringify(parsed)
+          const retryRes = await fetch(targetUrl, retryOptions)
+          if (retryRes.ok) {
+            data = await retryRes.text()
+            if (requestedCustomEmail) {
+              try {
+                const retryJson = JSON.parse(data)
+                retryJson.user = { email: requestedCustomEmail, name: requestedCustomEmail.split('@')[0] }
+                data = JSON.stringify(retryJson)
+              } catch {
+                // ignore
+              }
+            }
+            return new NextResponse(data, {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            })
+          }
+        } catch {
+          // continue with original response
+        }
+      }
+    } else if (path === '/auth/login' && requestedCustomEmail) {
+      try {
+        const json = JSON.parse(data)
+        json.user = { email: requestedCustomEmail, name: requestedCustomEmail.split('@')[0] }
+        data = JSON.stringify(json)
+      } catch {
+        // ignore
+      }
     }
 
     return new NextResponse(data, {

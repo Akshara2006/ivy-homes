@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
+import { useAuth } from '@/context/AuthContext'
 import { getListings } from '@/lib/api'
 import { Shell } from '@/components/layout/Shell'
+import { LoginForm } from '@/components/auth/LoginForm'
 import { ListingCard } from '@/components/listings/ListingCard'
 import { ListingTerminalRow } from '@/components/listings/ListingTerminalRow'
 import { ListingFiltersBar } from '@/components/listings/ListingFiltersBar'
@@ -16,6 +18,7 @@ import type { ListingFilters } from '@/lib/types'
 const PAGE_SIZE = 12
 
 export default function ListingsPage() {
+  const { isLoggedIn, isLoading: authLoading } = useAuth()
   const [filters, setFilters] = useState<ListingFilters>({})
   const [page, setPage] = useState(1)
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
@@ -23,8 +26,12 @@ export default function ListingsPage() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['listings', filters, page],
     queryFn: () => getListings(filters, page, PAGE_SIZE),
+    enabled: isLoggedIn,
     placeholderData: keepPreviousData,
   })
+
+  if (authLoading) return <PageLoader />
+  if (!isLoggedIn) return <LoginForm />
 
   // Data strictly fetched from the Ivy Homes API
   const listings = data?.results || []

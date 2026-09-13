@@ -477,19 +477,32 @@ async function main() {
     projects_with_wrong_listing_count: q10_projects_with_wrong_listing_count,
   }
 
+  const submissionPath = path.resolve('submission.json')
+  let candidate = {
+    name: '',
+    email: '',
+    repo_url: '',
+    demo_url: '',
+  }
+
+  if (fs.existsSync(submissionPath)) {
+    try {
+      const existing = JSON.parse(fs.readFileSync(submissionPath, 'utf8'))
+      if (existing.candidate) {
+        candidate = { ...candidate, ...existing.candidate }
+      }
+    } catch {
+      // ignore parse error if file is malformed
+    }
+  }
+
   const submission = {
     api_key: API_KEY,
-    candidate: {
-      name: '',
-      email: '',
-      repo_url: '',
-      demo_url: '',
-    },
+    candidate,
     answers,
     findings,
   }
 
-  const submissionPath = path.resolve('submission.json')
   fs.writeFileSync(submissionPath, JSON.stringify(submission, null, 2))
   console.log(`\n✓ Written full answers and ${findings.length} findings to ${submissionPath}`)
 }

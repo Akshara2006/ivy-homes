@@ -115,15 +115,16 @@ export default function InsightsPage() {
     return null
   }, [apiSummary, allListings])
 
-  if (authLoading || (!summary && (summaryLoading || listingsLoading))) {
+  if (authLoading) return <PageLoader />
+  if (!isLoggedIn) return <LoginForm />
+
+  if (!summary && (summaryLoading || listingsLoading)) {
     return (
       <Shell>
         <PageLoader message="Synthesizing market analytics & data audit from API..." />
       </Shell>
     )
   }
-
-  if (!isLoggedIn) return <LoginForm />
 
   if (!summary) {
     return (

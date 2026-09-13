@@ -2,10 +2,13 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { getListings } from '@/lib/api'
+import { useAuth } from '@/context/AuthContext'
 
 export function useLocalities() {
+  const { isLoggedIn } = useAuth()
   return useQuery({
     queryKey: ['localities'],
+    enabled: isLoggedIn,
     queryFn: async () => {
       // Fetch first page to get total, then extract unique localities
       const first = await getListings({}, 1, 200)

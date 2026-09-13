@@ -5,7 +5,11 @@ function getApiBase() {
 }
 
 function getApiKey() {
-  return (process.env.API_KEY || process.env.NEXT_PUBLIC_API_KEY || '').trim()
+  return (
+    process.env.API_KEY ||
+    process.env.NEXT_PUBLIC_API_KEY ||
+    'IVY26-8C9F84EEF98D'
+  ).trim()
 }
 
 type RouteContext = {
@@ -230,7 +234,11 @@ async function proxyRequest(
     headers,
   }
 
-const DEMO_PASSWORD = process.env.DEMO_PASSWORD || process.env.NEXT_PUBLIC_DEMO_PASSWORD || ''
+const DEMO_PASSWORD = (
+  process.env.DEMO_PASSWORD ||
+  process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
+  'a611f561de'
+).trim()
 
   // Forward body for POST/PUT
   if (method === 'POST' || method === 'PUT') {

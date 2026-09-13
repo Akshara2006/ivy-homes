@@ -20,7 +20,8 @@ export function LoginForm() {
   const [password, setPassword] = useState(() => {
     return (
       process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
-      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '')
+      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '') ||
+      'a611f561de'
     )
   })
   const [loading, setLoading] = useState(false)
@@ -29,7 +30,7 @@ export function LoginForm() {
     e.preventDefault()
     setLoading(true)
     try {
-      await login(email, password)
+      await login(email, password || 'a611f561de')
       if (typeof window !== 'undefined' && password) {
         localStorage.setItem('ivy_demo_password', password)
       }
@@ -46,7 +47,8 @@ export function LoginForm() {
     setEmail(userEmail)
     const saved =
       process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
-      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '')
+      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '') ||
+      'a611f561de'
     if (saved) {
       setPassword(saved)
     }

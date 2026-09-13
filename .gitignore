@@ -43,6 +43,5 @@ next-env.d.ts
 
 AGENTS.md
 CLAUDE.md
-pnpm-lock.yaml
 DEPLOYMENT.md
 submission.json

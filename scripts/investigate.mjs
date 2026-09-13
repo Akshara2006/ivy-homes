@@ -503,9 +503,9 @@ async function main() {
 
   const submissionPath = path.resolve('submission.json')
   let candidate = {
-    name: '',
-    email: '',
-    repo_url: '',
+    name: 'Uyyala Akshara Samaikya',
+    email: 'uyyala.20235092@mnnit.ac.in',
+    repo_url: 'https://github.com/Akshara2006/ivy-homes',
     demo_url: '',
   }
 

@@ -7,38 +7,36 @@ This project is configured and optimized for zero-configuration, cost-efficient 
 ## 1. Quick Deploy via Vercel Dashboard
 
 ### Step 1: Push to GitHub
-Make sure your project repository is committed and pushed to your GitHub account:
+Ensure all your latest changes are pushed to your repository:
 ```bash
-git init
 git add .
-git commit -m "feat: Ivy Homes property explorer & atelier UI"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<your-repo-name>.git
-git push -u origin main
+git commit -m "docs: update deployment and submission documentation"
+git push origin main
 ```
+*Repository*: `https://github.com/Akshara2006/ivy-homes`
 
 ### Step 2: Import Project into Vercel
 1. Log in to [Vercel](https://vercel.com) (or sign up with your GitHub account).
 2. Click **"Add New..."** -> **"Project"**.
-3. Select your repository from the list and click **"Import"**.
-4. Framework Preset will be automatically detected as **Next.js**.
+3. Select `Akshara2006/ivy-homes` from the list and click **"Import"**.
+4. Framework Preset is automatically detected as **Next.js**.
 
 ### Step 3: Configure Environment Variables
-Under **Environment Variables**, add the following 5 variables:
+Under **Environment Variables**, add the 5 variables configured in your `.env.local`:
 
 | Variable Name | Value | Description |
 | :--- | :--- | :--- |
 | `NEXT_PUBLIC_API_BASE` | `https://solve.ivy.homes` | Base URL of the Ivy Homes upstream service |
-| `API_KEY` | `IVY26-XXXXXXXXXXXX` | Your private assigned API key (kept strictly server-side) |
-| `DEMO_PASSWORD` | `your_assigned_password` | The shared password issued in your registration email |
-| `NEXT_PUBLIC_DEMO_PASSWORD` | `your_assigned_password` | Enables seamless 1-click demo persona sign-in on Vercel |
-| `ASSIGNED_LOCALITY` | `your_assigned_locality` | Your assigned locality (e.g. `hinjewadi`, `baner`, `kharadi`) |
+| `API_KEY` | `IVY26-8C9F84EEF98D` | Your private assigned API key (kept strictly server-side) |
+| `DEMO_PASSWORD` | `a611f561de` | The shared password issued in your registration email |
+| `NEXT_PUBLIC_DEMO_PASSWORD` | `a611f561de` | Enables seamless 1-click demo persona sign-in on Vercel |
+| `ASSIGNED_LOCALITY` | `Baner` | Your assigned locality |
 
 > [!IMPORTANT]
 > **API Key Security**: The `API_KEY` is never leaked to the browser. All browser requests flow through the Next.js App Router proxy (`/api/proxy/[...path]`), which injects the `X-API-Key` header securely on the server.
 
 ### Step 4: Deploy
-Click **"Deploy"**. Vercel will run `npm run build` and provision your globally distributed edge deployment in ~45 seconds.
+Click **"Deploy"**. Vercel will run `pnpm run build` and provision your globally distributed edge deployment in ~35 seconds.
 
 ---
 
@@ -51,17 +49,19 @@ Click **"Deploy"**. Vercel will run `npm run build` and provision your globally 
    - Static media configured with `Cache-Control: public, max-age=31536000, immutable`.
 3. **Response Compression**:
    - Gzip and Brotli compression enabled in `next.config.ts`.
-4. **Resilient Data Architecture**:
-   - If upstream returns HTTP 401 or has downtime, client-side fallback ensures the evaluator can still navigate all pages, test filters, compare properties, and review the 120-point inspection dossier without broken layouts.
+4. **API Proxy Normalization**:
+   - Handles `bhk -> bedroom` translation, compound `sort_by` decomposition, and `page -> offset` translation server-side before reaching upstream.
 
 ---
 
 ## 3. Post-Deployment Verification Checklist
 
-Once deployed, copy your deployment URL (e.g., `https://ivy-explorer.vercel.app`) and verify:
-- [ ] **Home Page**: Properties load, filter pills (1 BHK, 2 BHK, 3 BHK) react immediately.
-- [ ] **Inspection Dossier**: Click *"View 120-Pt Inspection"* on any card — check that the scorecard and EMI simulator open smoothly.
-- [ ] **Investment Terminal View**: Click the Table icon in the filter bar to test the high-density comparison mode.
-- [ ] **Comparison Studio**: Click the compare arrows on 2-3 properties, then click *"Compare Now"* in the floating dock.
-- [ ] **Market Intelligence**: Visit `/insights` to view the median pricing charts and data integrity audit.
-- [ ] **Update `submission.json`**: Paste your Vercel URL into `candidate.demo_url` and repository URL into `candidate.repo_url`.
+Once deployed, copy your deployment URL (e.g., `https://ivy-homes-xxx.vercel.app`) and verify:
+- [ ] **Default Login Gate**: Visiting the home page presents the Ivy Homes sign-in screen by default before granting access.
+- [ ] **1-Click Persona Login**: Click `Demo 1: Buyer` to log in instantly.
+- [ ] **Resale Homes & Pagination**: Page 1 and Page 2 load distinct verified listings smoothly.
+- [ ] **120-Point Inspection Dossier**: Click *"View 120-Pt Inspection"* on any card to review technical scorecards and the EMI calculator.
+- [ ] **Investment Terminal View**: Click the Table icon in the filter bar to test the high-density grid.
+- [ ] **Comparison Studio**: Click compare on 2-3 properties and verify the side-by-side comparison matrix.
+- [ ] **Market Intelligence**: Visit `/insights` to view live pricing charts and data integrity metrics.
+- [ ] **Update `submission.json`**: Paste your live Vercel URL into `candidate.demo_url` in `submission.json`.

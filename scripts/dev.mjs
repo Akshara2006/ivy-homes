@@ -5,7 +5,6 @@ const cmd = isWindows ? 'npx.cmd' : 'npx'
 
 const child = spawn(cmd, ['next', 'dev', '--webpack'], {
   stdio: 'inherit',
-  shell: true,
 })
 
 let exiting = false

@@ -3,12 +3,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://solve.ivy.homes'
-const API_KEY = process.env.API_KEY
+const API_KEY = process.env.API_KEY || process.env.NEXT_API_KEY || process.env.NEXT_PUBLIC_API_KEY || ''
 const PASSWORD = process.env.DEMO_PASSWORD
 const LOCALITY = process.env.ASSIGNED_LOCALITY
 
 if (!API_KEY || API_KEY === 'IVY26-XXXXXXXXXXXX') {
-  console.error('⚠️  Please configure your real API_KEY in .env.local before running.')
+  console.error('⚠️  Please configure your real API_KEY in .env or .env.local before running.')
   console.error('   Current API_KEY:', API_KEY || '(empty)')
   process.exit(1)
 }

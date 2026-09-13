@@ -20,8 +20,7 @@ export function LoginForm() {
   const [password, setPassword] = useState(() => {
     return (
       process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
-      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '') ||
-      'a611f561de'
+      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '')
     )
   })
   const [loading, setLoading] = useState(false)
@@ -30,9 +29,18 @@ export function LoginForm() {
     e.preventDefault()
     setLoading(true)
     try {
-      await login(email, password || 'a611f561de')
-      if (typeof window !== 'undefined' && password) {
-        localStorage.setItem('ivy_demo_password', password)
+      const effectivePassword =
+        password ||
+        process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
+        (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '')
+      if (!effectivePassword) {
+        toast.error('Please enter your password.')
+        setLoading(false)
+        return
+      }
+      await login(email, effectivePassword)
+      if (typeof window !== 'undefined' && effectivePassword) {
+        localStorage.setItem('ivy_demo_password', effectivePassword)
       }
       toast.success('Welcome back to Ivy Homes!')
     } catch (err: unknown) {
@@ -45,7 +53,14 @@ export function LoginForm() {
 
   const quickLogin = async (userEmail: string) => {
     setEmail(userEmail)
-    const pass = 'a611f561de'
+    const pass =
+      password ||
+      process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
+      (typeof window !== 'undefined' ? localStorage.getItem('ivy_demo_password') || '' : '')
+    if (!pass) {
+      toast.error('Please enter your password below to proceed.')
+      return
+    }
     setPassword(pass)
     setLoading(true)
     try {

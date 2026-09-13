@@ -7,8 +7,9 @@ function getApiBase() {
 function getApiKey() {
   return (
     process.env.API_KEY ||
+    process.env.NEXT_API_KEY ||
     process.env.NEXT_PUBLIC_API_KEY ||
-    'IVY26-8C9F84EEF98D'
+    ''
   ).trim()
 }
 
@@ -237,7 +238,7 @@ async function proxyRequest(
 const DEMO_PASSWORD = (
   process.env.DEMO_PASSWORD ||
   process.env.NEXT_PUBLIC_DEMO_PASSWORD ||
-  'a611f561de'
+  ''
 ).trim()
 
   let requestedCustomEmail = ''

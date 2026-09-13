@@ -146,10 +146,10 @@ The platform is optimized for zero-configuration, zero-cost deployment on [Verce
 2. **Import on Vercel**: Connect your repo on [vercel.com/new](https://vercel.com/new). Framework is automatically detected as **Next.js**.
 3. **Add Environment Variables**:
    - `NEXT_PUBLIC_API_BASE`: `https://solve.ivy.homes`
-   - `API_KEY`: `IVY26-8C9F84EEF98D` *(kept strictly server-side)*
+   - `API_KEY`: `IVY26-XXXXXXXXXXXX` *(kept strictly server-side)*
    - `DEMO_PASSWORD`: `your_assigned_password`
    - `NEXT_PUBLIC_DEMO_PASSWORD`: `your_assigned_password`
-   - `ASSIGNED_LOCALITY`: `Baner`
+   - `ASSIGNED_LOCALITY`: `your_assigned_locality`
 4. **Deploy**: Click **Deploy**. Vercel compiles the production bundle in ~30 seconds.
 5. **Optimizations**:
    - `images.unoptimized: true`: Static media served directly from CDN without consuming image transformation quotas.
